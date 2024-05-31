@@ -8,5 +8,5 @@ module.exports = function (app: any) {
   app.use(cors());
   app.use(cookieParser());
 
-  app.use("/user", userRouter);
+  app.use("/users", userRouter);
 };
