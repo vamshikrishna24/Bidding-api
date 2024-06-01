@@ -22,6 +22,7 @@ model User {
   created_at   DateTime       @default(now())
   Bid          Bid[]
   Notification Notification[]
+  Item         Item[]
 }
 
 model Item {
@@ -33,6 +34,8 @@ model Item {
   image_url      String?
   end_time       DateTime
   created_at     DateTime @default(now())
+  userId         Int
+  user           User     @relation(fields: [userId], references: [id])
   Bid            Bid[]
 }
 

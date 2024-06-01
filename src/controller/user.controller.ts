@@ -2,12 +2,8 @@ import Joi from "joi";
 import bcrypt from "bcrypt";
 import { prisma } from "../startup/db";
 import jwt from "jsonwebtoken";
-import _ from "lodash";
+import _, { includes } from "lodash";
 import { ErrorHandler } from "../lib/error";
-
-export const test = (req: any, res: any) => {
-  res.send("working");
-};
 
 export const register = async (req: any, res: any) => {
   const { error } = validateUserRegister(req.body);
@@ -56,6 +52,23 @@ export const login = async (req: any, res: any, next: any) => {
       process.env.JWT_SECRET!
     );
     res.cookie("token", token, { httpOnly: true, maxAge: 3600000 }).send(token);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const profile = async (req: any, res: any, next: any) => {
+  if (req.user.id != req.params.id) {
+    return next(ErrorHandler(401, "You can only update your profile"));
+  }
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: Number.parseInt(req.params.id) },
+      include: {
+        Item: true,
+      },
+    });
+    res.send(user);
   } catch (err) {
     console.log(err);
   }
