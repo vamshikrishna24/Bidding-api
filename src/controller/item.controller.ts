@@ -29,13 +29,13 @@ export const getItemsById = async (req: any, res: any, next: any) => {
 export const postItem = async (req: any, res: any, next: any) => {
   const { error } = validateItem(req.body);
   if (error) return next(ErrorHandler(400, "Enter all details of items"));
-  const { starting_price, end_time } = req.body;
+  const data = { ...req.body };
   try {
     let item = await prisma.item.create({
       data: {
-        ...req.body,
-        end_time: new Date(end_time),
-        current_price: starting_price,
+        ...data,
+        end_time: new Date(data.end_time),
+        current_price: data.starting_price,
         userId: req.user.id,
       },
     });
